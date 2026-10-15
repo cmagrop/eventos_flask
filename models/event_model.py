@@ -43,7 +43,29 @@ class Event:
                 ids_agrupados.append(row['event_id'])
             return ids_agrupados       
         
-         
+    @classmethod
+    def guardar(cls,data):
+        query="""
+        insert into events(event_name,location,event_date,details,user_id)
+        values(%(event_name)s,%(location)s,%(event_date)s,%(details)s,%(user_id)s)
+        """
+        event_id= connectMySQL(DB).query_db(query,data)
+        #llamando método para unir anfitrion con evento
+        cls.unirAnfitrionEvento({'user_id':data['user_id'],'event_id':event_id})
+        return event_id
+
+    @classmethod
+    def unirAnfitrionEvento(cls,data):
+        query="""insert into users_events
+        (user_id,event_id)
+        values(%(user_id)s,%(event_id)s);
+        """
+        return connectMySQL(DB).query_db(query,data)
+
+   #obtener informacion en base al id del evento
+   # actualizar evento
+   # eliminar evento     
+
 
     
 
