@@ -16,7 +16,7 @@ class Event:
         self.created_at = data.get('created_at')
         self.updated_at = data.get('updated_at')
     @classmethod
-    def obtener_todos_con_organizadores(cls):
+    def obtener_todos_eventos_con_organizadores(cls):
         query="""
         select e.*,u.first_name as name,u.last_name as last_name
         from events e
@@ -27,9 +27,23 @@ class Event:
         events=[]
         if results: #si existen resultados
             for row in results: #row: fila
-                events.append(row)
+                events.append(cls(row))#cls(row)<->Event(row)
         return events        
-
+    @classmethod
+    def ObtenerIdsVinculadosEventoUsuario(cls,data):
+        query = """
+        select event_id
+        from users_events
+        where user_id=%(user_id)s 
+        """
+        results = connectMySQL(DB).query_db(query,data)
+        ids_agrupados=[]
+        if results:
+            for row in results:
+                ids_agrupados.append(row['event_id'])
+            return ids_agrupados       
+        
+         
 
     
 
